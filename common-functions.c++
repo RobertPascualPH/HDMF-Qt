@@ -22,34 +22,32 @@
  *
  *
  * ************************************************************/
-#include <QTableWidgetItem>
-#include <QTableWidget>
-#include <QStringList>
-#include <QString>
-#include <QByteArray>
-#include <QGridLayout>
-#include <QLineEdit>
-#include <QLayoutItem>
-#include <QFile>
-#include <stdio.h>
 #include "eis-common.h"
+
+void EIS_Object::setFirmName(QLineEdit *efirmname)
+{
+    EIS_FirmName = efirmname;
+}
+
+
+void EIS_Object::setHDMFNumber(QLineEdit *hdmfnum)
+{
+    EIS_HDMFNumber = ehdmfnum;
+}
+
+
+void EIS_Object::setFirmAddress(QLineEdit *efirmaddr)
+{
+    EIS_FirmAddress = efirmaddr;
+}
+
 
 void EIS_Object::save_Company_Info(void)
 {
 
-     int lineStart = FIRM_INFORMATION_LINE;
-    
-     QLayoutItem *tlai =  theLayout->itemAtPosition(lineStart+2,2);
-     QLineEdit *editCtrl = (QLineEdit *) tlai->widget();
-     QString firmName = editCtrl->text(); // Does this make a copy?
-
-     tlai = theLayout -> itemAtPosition(lineStart+1,2);
-     editCtrl = (QLineEdit *) tlai -> widget();
-     QString firmHDMFNum = editCtrl -> text();
-
-     tlai = theLayout -> itemAtPosition(lineStart+3,2);
-     editCtrl = (QLineEdit *) tlai -> widget();
-     QString firmAddress = editCtrl -> text();
+     QString firmName    = EIS_FirmName->text(); // Does this make a copy?
+     QString firmHDMFNum = EIS_HDMFNumber->text();
+     QString firmAddress = EIS_FirmAddress->text();
 
      QString info_text;
      info_text.sprintf("%s|%s|%s",
@@ -95,11 +93,6 @@ void EIS_Object::set_Employee_Info(void)
      }
 }
          
-
-void EIS_Object::setLayout(QGridLayout *src)
-{
-     theLayout = src;
-}
 
 void EIS_Object::setCurrentFileName(char *cfile)
 {

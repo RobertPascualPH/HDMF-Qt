@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
 
     // Set the applications current file name.
     eisobject.setCurrentFileName((const char *) DEFAULT_EMPLOYEE_FILE);
-    eisobject.setLayout(mainLayout);
 
     // Lay down the Document Title.
 
