@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QGridLayout>
 #include <stdio.h>
+#include <string.h>
 #include <RString.h>
 
 // The following indicates where the Employee Table is Saved.
@@ -58,29 +59,34 @@ class EIS_Object : public QObject
         void save_Company_Info(void);
 
     public:
+        EIS_Object();
         void set_Current_File_Name(char *);
         void set_Employee_Table(QTableWidget *table);
-        void set_Firm_Name(QLineEdit *efirmname);
-        void set_HDMF_Number(QLineEdit *ehdmfnum);
-        void set_Firm_Address(QLineEdit *efirmaddr);
-
+        void set_HDMFN_Text_Field(QLineEdit *tl);
+        void set_Firm_Name_Text_Field(QLineEdit *tl);
+        void set_Firm_Address_Text_Field(QLineEdit *tl);
+        void set_Coverage_Date_Text_Field(QLineEdit *tl);
+ 
         QString       get_Current_File_Name(void);
         QTableWidget *get_Employee_Table(void);
         QLineEdit    *get_Firm_Name(void);
         QLineEdit    *get_HDMF_Number(void);
         QLineEdit    *get_Firm_Address(void);
+        QLineEdit    *get_Coverage_Date(void);
 
         int  printTableAsTabular(void);
-        int  init_employee_table(QTableWidget *employeeTable);
-        void set_Employee_Info(void);
+        // int  init_employee_table(QTableWidget *employeeTable);
+        // void set_Employee_Info(void);
 
     private:
-        char         *EIS_csv_filename;
-        QTableWidget *EIS_employee_Table;
-        int           EIS_num_Employees;
-        QLineEdit    *EIS_Firm_Name;
+        char          EIS_Employee_CSV_File[1024];
+        char          EIS_Firm_CSV_File[1024];
+        QTableWidget *EIS_Employee_Table;
+        int           EIS_Num_Employees;
         QLineEdit    *EIS_HDMF_Number;
+        QLineEdit    *EIS_Firm_Name;
         QLineEdit    *EIS_Firm_Address;
+        QLineEdit    *EIS_Coverage_Date;
 };
 
 

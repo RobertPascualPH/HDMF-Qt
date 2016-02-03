@@ -37,13 +37,14 @@ int main(int argc, char *argv[])
     QApplication mainApp(argc, argv);
     EIS_Object eisobject;
 
+    printf("Initialization of eisobject successfull.\n");
+
     // Create the application and assign it a layout.
 
     QWidget *parent = new QWidget();
     QGridLayout *mainLayout = new QGridLayout(parent);
 
-    // Set the applications current file name.
-    eisobject.setCurrentFileName((const char *) DEFAULT_EMPLOYEE_FILE);
+    printf("Creation of mainLayout successful.\n");
 
     // Lay down the Document Title.
 
@@ -58,33 +59,48 @@ int main(int argc, char *argv[])
     QLabel *companyInfoLabel = new QLabel("<h2>Company Information</h2>");
     mainLayout->addWidget(companyInfoLabel, lineStart, 1,1,2);
 
+    printf("Layout of companyInfoLabel successful.\n");
+
     QLabel *hdmfNumLabel = new QLabel("HDMF Employer Number");
-    QLineEdit *hdmfNumName = new QLineEdit("02-0078300-4");
+    QLineEdit *hdmfNumName = new QLineEdit("01-000000-1");
     mainLayout->addWidget(hdmfNumLabel, lineStart+1,1);
+    eisobject.set_HDMFN_Text_Field(hdmfNumName);
+
+    printf("Got here!!\n");
+    
     mainLayout->addWidget(hdmfNumName, lineStart+1,2);
 
+    printf("Layout of hdmfNumName successful.\n");
+
     QLabel *firmLabel = new QLabel("Name of Firm");
-    QLineEdit *firmName = new QLineEdit("Makabulos Memorial High School");
+    QLineEdit *firmName = new QLineEdit("My Way OrThe HighWay");
     mainLayout->addWidget(firmLabel, lineStart+2, 1);
     mainLayout->addWidget(firmName,  lineStart+2, 2);
+    eisobject.set_Firm_Name_Text_Field(firmName);
+
+    printf("Layout of firmName successful.\n");
 
     QLabel *addressLabel = new QLabel("Address");
-    QLineEdit *addressName = new QLineEdit("Rizal St., Brgy San Fernando, Victoria, Tarlac, 2313");
+    QLineEdit *addressName =  new QLineEdit("Right Beside Harvard.");
     mainLayout->addWidget(addressLabel, lineStart+3, 1);
     mainLayout->addWidget(addressName,  lineStart+3, 2);
+    eisobject.set_Firm_Address_Text_Field(addressName);
+
+    printf("Layout of addressName successful.\n");
 
     QLabel *dateLabel = new QLabel("Date of Coverage");
     QLineEdit *dateName = new QLineEdit("Month Year");
     mainLayout->addWidget(dateLabel, lineStart+4, 1);
     mainLayout->addWidget(dateName,  lineStart+4, 2);
+    eisobject.set_Firm_Address_Text_Field(addressName);
+
+    printf("Layout of dateName successful.\n");
 
     QPushButton *saveInfoButton = new QPushButton("Save Firm Info");
     mainLayout->addWidget(saveInfoButton, lineStart, 6);
     QObject::connect(saveInfoButton, SIGNAL(clicked()), &eisobject, 
         SLOT(save_Company_Info()));
     
-    eisobject.set_Employee_Info();
-
     // Lay down the Table view for the employees and populate it with
     // employee data. The employee data is read from the file
     // DEFAULT_EMPLOYEE_FILE. This manifest constant is defined in the
@@ -92,10 +108,8 @@ int main(int argc, char *argv[])
 
     lineStart = EMPLOYEE_TABLE_LINE;
 
-    QTableWidget *employeeTable = new QTableWidget(20,15);
+    QTableWidget *employeeTable = eisobject.get_Employee_Table();
     mainLayout->addWidget(employeeTable, lineStart+1,1,1,6);
-
-    int empNum = eisobject.init_employee_table(employeeTable);    // This function initializes the employee table.
 
     // Now for the various buttons which allow us to change the
     // contents of the table, save the table, quit the application,
