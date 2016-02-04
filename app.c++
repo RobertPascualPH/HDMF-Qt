@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     QPushButton *saveInfoButton = new QPushButton("Save Firm Info");
     mainLayout->addWidget(saveInfoButton, lineStart, 6);
     QObject::connect(saveInfoButton, SIGNAL(clicked()), &eisobject, 
-        SLOT(save_Company_Info()));
+        SLOT(save_Firm_Info(void)));
     
     // Lay down the Table view for the employees and populate it with
     // employee data. The employee data is read from the file
@@ -108,8 +108,9 @@ int main(int argc, char *argv[])
 
     lineStart = EMPLOYEE_TABLE_LINE;
 
-    QTableWidget *employeeTable = eisobject.get_Employee_Table();
+    QTableWidget *employeeTable = new QTableWidget(20,15);
     mainLayout->addWidget(employeeTable, lineStart+1,1,1,6);
+    eisobject.set_Employee_Table(employeeTable);
 
     // Now for the various buttons which allow us to change the
     // contents of the table, save the table, quit the application,
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
     QPushButton *saveButton = new QPushButton("Save Table");
     mainLayout->addWidget(saveButton, lineStart,6);
     QObject::connect(saveButton, SIGNAL(clicked()), &eisobject, 
-        SLOT(save_table(QString)));
+        SLOT(Save_Table(void)));
 
     QPushButton *cancelButton = new QPushButton("Cancel");
     mainLayout->addWidget(cancelButton, lineStart+3,5);

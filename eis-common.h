@@ -55,12 +55,13 @@ class EIS_Object : public QObject
 
     public slots:
         void create_crf(void);
-        void save_table(QString);
-        void save_Company_Info(void);
+        void Save_Table(void);
+        void save_Firm_Info(void);
 
     public:
         EIS_Object();
         void set_Current_File_Name(char *);
+        void set_Firm_Info(void);
         void set_Employee_Table(QTableWidget *table);
         void set_HDMFN_Text_Field(QLineEdit *tl);
         void set_Firm_Name_Text_Field(QLineEdit *tl);
@@ -87,6 +88,10 @@ class EIS_Object : public QObject
         QLineEdit    *EIS_Firm_Name;
         QLineEdit    *EIS_Firm_Address;
         QLineEdit    *EIS_Coverage_Date;
+
+        // The following elements contain temporary data.
+
+        QStringList  Firm_Info_String_List;
 };
 
 

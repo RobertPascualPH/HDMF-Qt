@@ -24,24 +24,65 @@
  * ************************************************************/
 #include "eis-common.h"
 
+///////////////////////////////////////////////////////////////////
+// CONSTRUCTORS
+///////////////////////////////////////////////////////////////////
 
 EIS_Object::EIS_Object()
 // The constructor has assumed the duties of allocating
 // the QWidgets and initializing their values.
 {
-    // Set the defaults.
 
     printf("Entering default constructor.");
 
-    // QLineEdit *EIS_Firm_Name = new QLineEdit("Makabulos Memorial High School");
-    // QLineEdit *EIS_HDMF_Number = new QLineEdit("00-0000000-0");
-    // QLineEdit *EIS_Firm_Address = new QLineEdit("Right beside Harvard University");
-    // QLineEdit *EIS_Coverage_Date = new QLineEdit("Month Year");
+    strcpy(EIS_Employee_CSV_File, DEFAULT_EMPLOYEE_FILE);
+    strcpy(EIS_Firm_CSV_File, DEFAULT_INFO_FILE);
+    EIS_Employee_Table = 0x00;
+    EIS_Num_Employees = 0;
+    EIS_HDMF_Number = 0x00;
+    EIS_Firm_Name = 0x00;
+    EIS_Firm_Address = 0x00;
+    EIS_Coverage_Date = 0x00;
+    set_Firm_Info();
 
-    // Now for the Employee Table
-    //
-    QTableWidget *EIS_Employee_Table
-            = new QTableWidget(20, 15);  // ISSUE: I don't like hard-coded limits.
+    printf("Exiting default constructor.");
+}
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+// MUTATORS
+////////////////////////////////////////////////////////////////
+
+void EIS_Object::set_Current_File_Name(char *cfile)
+{
+    strcpy(EIS_Employee_CSV_File, cfile);
+}
+
+
+void EIS_Object::set_Firm_Info(void)
+{
+     QFile fin(tr(DEFAULT_INFO_FILE));
+     char buffer[1024];
+
+     if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
+         fin.readLine(buffer, 1024);
+         QString QStringBuffer(buffer);      // Hope this works.
+         Firm_Info_String_List = QStringBuffer.split("|"); 
+     }
+      
+     fin.close();
+     printf("Done!\n");
+}
+
+#ifdef OLD_SET_EMPLOYEE_TABLE
+
+void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
+{
+    EIS_Employee_Table = empTbl;
+
     QStringList *zHeaderStrings = new QStringList();
 
     // Set the headers for the QTableWidget
@@ -99,10 +140,110 @@ EIS_Object::EIS_Object()
         fclose(eTable);
     }
     EIS_Num_Employees = row;
+}
+#else
 
-    printf("Exiting default constructor.");
+void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
+{
+    EIS_Employee_Table = empTbl;
+
+    QStringList *zHeaderStrings = new QStringList();
+
+    // Set the headers for the QTableWidget
+
+    zHeaderStrings -> append("Last Name");
+    zHeaderStrings -> append("First Name");
+    zHeaderStrings -> append("Middle Name");
+    zHeaderStrings -> append("SSS Number");
+    zHeaderStrings -> append("PH Num");
+    zHeaderStrings -> append("HDMF Num");
+    zHeaderStrings -> append("Salary");
+    zHeaderStrings -> append("SSS EE\nContrib");
+    zHeaderStrings -> append("SSS ER\nContrib");
+    zHeaderStrings -> append("EC\nContrib");
+    zHeaderStrings -> append("PH EE\nContrib");
+    zHeaderStrings -> append("PH ER\nContrib");
+    zHeaderStrings -> append("HDMF EE\nContrib");
+    zHeaderStrings -> append("HDMF ER\nContrib");
+    zHeaderStrings -> append("Remarks");
+
+    EIS_Employee_Table-> setHorizontalHeaderLabels(*zHeaderStrings);   // Note that setHorizontalHeaderLabels() expects a reference to a QStringList.
+
+    // Populate the QTableWidget with the contents of DEFAULT_EMPLOYEE_FILE
+
+    FILE *eTable = fopen(DEFAULT_EMPLOYEE_FILE, "r");
+    char *line = 0x00;    // line is a pointer to NULL.
+    char *wordsptr[1024], wordsbuffer[2048];    // Words pointer and words buffer
+    int retval, row = 0;
+    size_t len = 0;
+
+    if (eTable != NULL) {
+
+        // We clear both wordsptr and wordsbuffer because the function
+        // strsplit() does not clear them.
+
+        for (int k = 0; k < 1024; ++k) {
+            wordsptr[k] = 0x00;
+        }
+
+        for (int k = 0; k < 2048; ++k) {
+            wordsbuffer[k] = 0x00;
+        }
+
+        row = 0;
+        while ((retval = getline(&line, &len, eTable)) > 0) {
+            retval = strsplit(line, wordsptr, wordsbuffer);
+
+	    for (int column = 1; column < 15; ++column) {
+	        QTableWidgetItem *newItem = new QTableWidgetItem(wordsptr[column]);
+		EIS_Employee_Table->setItem(row, column-1, newItem);
+	    }
+            ++row;
+        }
+        free(line);
+        fclose(eTable);
+    }
+    EIS_Num_Employees = row;
 }
 
+#endif
+
+
+
+void EIS_Object::set_HDMFN_Text_Field(QLineEdit *tl)
+{
+    EIS_HDMF_Number = tl;
+    EIS_HDMF_Number->setText(Firm_Info_String_List[0]);
+}
+
+
+void EIS_Object::set_Firm_Name_Text_Field(QLineEdit *tl)
+{
+    EIS_Firm_Name = tl;
+    EIS_Firm_Name->setText(Firm_Info_String_List[1]);
+}
+
+
+
+void EIS_Object::set_Firm_Address_Text_Field(QLineEdit *tl)
+{
+    EIS_Firm_Address = tl;
+    EIS_Firm_Address->setText(Firm_Info_String_List[2]);
+}
+
+
+
+void EIS_Object::set_Coverage_Date_Text_Field(QLineEdit *tl)
+{
+    EIS_Coverage_Date = tl;
+}
+
+
+
+
+/////////////////////////////////////////////////////////////
+// ACCESSORS
+/////////////////////////////////////////////////////////////
 
 QTableWidget * EIS_Object::get_Employee_Table(void)
 {
@@ -121,10 +262,6 @@ QLineEdit * EIS_Object::get_HDMF_Number(void)
     return EIS_HDMF_Number;
 }
 
-void EIS_Object::set_HDMFN_Text_Field(QLineEdit *tl)
-{
-    EIS_HDMF_Number = tl;
-}
 
 QLineEdit * EIS_Object::get_Firm_Address(void)
 {
@@ -138,7 +275,7 @@ QLineEdit * EIS_Object::get_Coverage_Date(void)
 }
 
 
-void EIS_Object::save_Company_Info(void)
+void EIS_Object::save_Firm_Info(void)
 {
 
      QString firmName    = EIS_Firm_Name->text(); // Does this make a copy?
@@ -191,18 +328,6 @@ void EIS_Object::set_Employee_Info(void)
 }
 #endif
 
-void EIS_Object::set_Current_File_Name(char *cfile)
-{
-    strcpy(EIS_Employee_CSV_File, cfile);
-}
-
-
-void EIS_Object::set_Employee_Table(QTableWidget *table)
-{
-    EIS_Employee_Table = table;   
-}
-
-
 void EIS_Object::create_crf(void)
 // Creates the HDMF Contributions Report Form.
 //
@@ -212,8 +337,29 @@ void EIS_Object::create_crf(void)
 }
 
 
-void EIS_Object::save_table(QString cfname)
+void EIS_Object::Save_Table(void)
 {
+    QTableWidgetItem *fItem;
+    QString qstr;
+    QByteArray msgStr;
+    int row;
+
+
+    for (row = 0; ; row++) {
+        if ((fItem = EIS_Employee_Table->item(row,0)) == 0) {
+             break;
+        }
+        else for (int col = 0; col < 15; col++) {
+	    fItem = EIS_Employee_Table->item(row,col);
+            if (fItem != 0x00) {
+	        qstr = fItem->text();
+	        msgStr = qstr.toLatin1();
+	        printf("%s", msgStr.data());
+            }
+            putchar('|');
+        }
+       printf("\n");  
+    }
 }
 
 
