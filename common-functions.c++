@@ -120,7 +120,8 @@ void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
     if (eTable.open(QIODevice::ReadOnly | QIODevice::Text)) {
         row = 0;
         while ((sizeRead = eTable.readLine(inbuffer, 2048)) > 0) {
-            QString readBuffer(inbuffer);
+            QString readBuffer(inbuffer);    // Read one line from file.
+            readBuffer.remove(QChar('\n'));
             QStringList fieldList = readBuffer.split("|");
             
 	    for (int column = 1; column < fieldList.size(); ++column) {
@@ -221,12 +222,26 @@ void EIS_Object::save_Firm_Info(void)
      
 }
 
-void EIS_Object::create_crf(void)
+void EIS_Object::Create_CRF(void)
 // Creates the HDMF Contributions Report Form.
 //
 {
-    printTableAsTabular();
+    QTableWidgetItem *fItem;
+    QString qstr;
+    QByteArray msgStr;
+    int row;
 
+    for (row = 0; row < EIS_Num_Employees; row++) {
+        for (int col = 0; col < 15; col++) {
+	    fItem = EIS_Employee_Table->item(row,col);
+            if (fItem != 0x00) {
+	        qstr = fItem->text();
+	        msgStr = qstr.toLatin1();
+	        printf("%s ", msgStr.data());
+            }
+        }
+       printf("\n");  
+    }
 }
 
 
@@ -253,14 +268,27 @@ void EIS_Object::Save_Table(void)
     for (row = 0; ; row++) {
         out_Buffer[0] = 0x00;    // Make sure the string is empty.
         if ((fItem = EIS_Employee_Table->item(row,0)) == 0) {
+            // If column 0 does not have an associated QTableWidget
+            // then we're done.
              break;
         }
         else {
+            // Check if the QTableWidgetItem in column 0 is not
+            // empty.
+            qstr = fItem->text();
+            qstr.remove(QChar('\n'));
+            msgStr = qstr.toLatin1();
+            sprintf(out_Buffer, "%s", qPrintable(msgStr));
+            if (strlen(out_Buffer) == 0) break;  // Break if empty string.
+
+            // Ah, we are good to go.
+            //
             sprintf(out_Buffer, "%d|", row+1);
             for (int col = 0; col < 15; col++) {
 		fItem = EIS_Employee_Table->item(row,col);
 		if (fItem != 0x00) {
 		    qstr = fItem->text();
+                    qstr.remove(QChar('\n'));
 		    msgStr = qstr.toLatin1();
                     strcat(out_Buffer, qPrintable(qstr));
 		    // strcat(out_Buffer, msgStr.data());
@@ -299,78 +327,5 @@ int EIS_Object::printTableAsTabular(void)
 
     return row;
 }
-
-
-#ifdef OLDVERSION
-
-int EIS_Object::init_employee_table(QTableWidget *empTable)
-// This function initializes employee table (empTable) by 
-// a) setting the horizontal headers,
-// b) loading the contents of DEFAULT_EMPLOYEE_FILE, and
-// c) returning with the number of employees found.
-// d) Setting EIS_employeeTable to empTable.
-{
-    QStringList *zHeaderStrings = new QStringList();
-    EIS_employeeTable = empTable; // Set the current employee table
-
-    // Set the headers for the QTableWidget
-
-    zHeaderStrings -> append("Last Name");
-    zHeaderStrings -> append("First Name");
-    zHeaderStrings -> append("Middle Name");
-    zHeaderStrings -> append("SSS Number");
-    zHeaderStrings -> append("PH Num");
-    zHeaderStrings -> append("HDMF Num");
-    zHeaderStrings -> append("Salary");
-    zHeaderStrings -> append("SSS EE\nContrib");
-    zHeaderStrings -> append("SSS ER\nContrib");
-    zHeaderStrings -> append("EC\nContrib");
-    zHeaderStrings -> append("PH EE\nContrib");
-    zHeaderStrings -> append("PH ER\nContrib");
-    zHeaderStrings -> append("HDMF EE\nContrib");
-    zHeaderStrings -> append("HDMF ER\nContrib");
-    zHeaderStrings -> append("Remarks");
-
-    EIS_employeeTable-> setHorizontalHeaderLabels(*zHeaderStrings);   // Note that setHorizontalHeaderLabels() expects a reference to a QStringList.
-
-    // Populate the QTableWidget with the contents of DEFAULT_EMPLOYEE_FILE
-
-    FILE *eTable = fopen(DEFAULT_EMPLOYEE_FILE, "r");
-    char *line = 0x00;    // line is a pointer to NULL.
-    char *wordsptr[1024], wordsbuffer[2048];    // Words pointer and words buffer
-    int retval, row = 0;
-    size_t len = 0;
-
-    if (eTable != NULL) {
-
-        // We clear both wordsptr and wordsbuffer because the function
-        // strsplit() does not clear them.
-
-        for (int k = 0; k < 1024; ++k) {
-            wordsptr[k] = 0x00;
-        }
-
-        for (int k = 0; k < 2048; ++k) {
-            wordsbuffer[k] = 0x00;
-        }
-
-        row = 0;
-        while ((retval = getline(&line, &len, eTable)) > 0) {
-            retval = strsplit(line, wordsptr, wordsbuffer);
-
-	    for (int column = 1; column < 15; ++column) {
-	        QTableWidgetItem *newItem = new QTableWidgetItem(wordsptr[column]);
-		EIS_employeeTable->setItem(row, column-1, newItem);
-	    }
-            ++row;
-        }
-        free(line);
-        fclose(eTable);
-    }
-    EIS_numEmployees = row;
-    return EIS_numEmployees;
-}
-
-#endif
 
 
