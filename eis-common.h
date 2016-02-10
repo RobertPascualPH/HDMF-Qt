@@ -89,6 +89,7 @@ class EIS_Object : public QObject
         QLineEdit    *EIS_Firm_Name;
         QLineEdit    *EIS_Firm_Address;
         QLineEdit    *EIS_Coverage_Date;
+        int           flags;       // This should be bit flags. But not yet.
 
         // The following elements contain temporary data.
 
