@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     QObject::connect(saveButton, SIGNAL(clicked()), &eisobject, 
         SLOT(Save_Table(void)));
 
-    QPushButton *cancelButton = new QPushButton("Cancel");
+    QPushButton *cancelButton = new QPushButton("Close");
     mainLayout->addWidget(cancelButton, lineStart+3,5);
     QObject::connect(cancelButton, SIGNAL(clicked()), &mainApp, SLOT(quit()));
 
