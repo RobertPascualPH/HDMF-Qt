@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     // printf("Layout of companyInfoLabel successful.\n");
 
     QLabel *hdmfNumLabel = new QLabel("HDMF Employer Number");
-    QLineEdit *hdmfNumName = new QLineEdit("01-000000-1");
+    QLineEdit *hdmfNumName = new QLineEdit("");
     mainLayout->addWidget(hdmfNumLabel, lineStart+1,1);
     eisobject.set_HDMFN_Text_Field(hdmfNumName);
 
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     // printf("Layout of hdmfNumName successful.\n");
 
     QLabel *firmLabel = new QLabel("Name of Firm");
-    QLineEdit *firmName = new QLineEdit("My Way OrThe HighWay");
+    QLineEdit *firmName = new QLineEdit("");
     mainLayout->addWidget(firmLabel, lineStart+2, 1);
     mainLayout->addWidget(firmName,  lineStart+2, 2);
     eisobject.set_Firm_Name_Text_Field(firmName);
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     // printf("Layout of firmName successful.\n");
 
     QLabel *addressLabel = new QLabel("Address");
-    QLineEdit *addressName =  new QLineEdit("Right Beside Harvard.");
+    QLineEdit *addressName =  new QLineEdit("");
     mainLayout->addWidget(addressLabel, lineStart+3, 1);
     mainLayout->addWidget(addressName,  lineStart+3, 2);
     eisobject.set_Firm_Address_Text_Field(addressName);
