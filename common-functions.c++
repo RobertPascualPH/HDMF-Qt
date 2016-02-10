@@ -77,9 +77,9 @@ void EIS_Object::set_Firm_Info(void)
      // printf("Done!\n");
 }
 
-#ifdef OLD_SET_EMPLOYEE_TABLE
-
 void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
+// This version uses the methods of the QString library.
+//
 {
     EIS_Employee_Table = empTbl;
 
@@ -105,109 +105,34 @@ void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
 
     EIS_Employee_Table-> setHorizontalHeaderLabels(*zHeaderStrings);   // Note that setHorizontalHeaderLabels() expects a reference to a QStringList.
 
+
+    /////////////////////////////////////////////////////////////////////////
+    //
     // Populate the QTableWidget with the contents of DEFAULT_EMPLOYEE_FILE
+    //
+    /////////////////////////////////////////////////////////////////////////
 
-    FILE *eTable = fopen(DEFAULT_EMPLOYEE_FILE, "r");
-    char *line = 0x00;    // line is a pointer to NULL.
-    char *wordsptr[1024], wordsbuffer[2048];    // Words pointer and words buffer
-    int retval, row = 0;
-    size_t len = 0;
+    QFile eTable(DEFAULT_EMPLOYEE_FILE);
+    int row = 0;
+    int sizeRead;
+    char inbuffer[2048];
 
-    if (eTable != NULL) {
-
-        // We clear both wordsptr and wordsbuffer because the function
-        // strsplit() does not clear them.
-
-        for (int k = 0; k < 1024; ++k) {
-            wordsptr[k] = 0x00;
-        }
-
-        for (int k = 0; k < 2048; ++k) {
-            wordsbuffer[k] = 0x00;
-        }
-
+    if (eTable.open(QIODevice::ReadOnly | QIODevice::Text)) {
         row = 0;
-        while ((retval = getline(&line, &len, eTable)) > 0) {
-            retval = strsplit(line, wordsptr, wordsbuffer);
-
-	    for (int column = 1; column <= 16; ++column) {
-	        QTableWidgetItem *newItem = new QTableWidgetItem(wordsptr[column]);
+        while ((sizeRead = eTable.readLine(inbuffer, 2048)) > 0) {
+            QString readBuffer(inbuffer);
+            QStringList fieldList = readBuffer.split("|");
+            
+	    for (int column = 1; column < fieldList.size(); ++column) {
+	        QTableWidgetItem *newItem = new QTableWidgetItem(fieldList[column]);
 		EIS_Employee_Table->setItem(row, column-1, newItem);
 	    }
             ++row;
         }
-        free(line);
-        fclose(eTable);
+        eTable.close();
     }
     EIS_Num_Employees = row;
 }
-#else
-
-void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
-{
-    EIS_Employee_Table = empTbl;
-
-    QStringList *zHeaderStrings = new QStringList();
-
-    // Set the headers for the QTableWidget
-
-    zHeaderStrings -> append("Last Name");
-    zHeaderStrings -> append("First Name");
-    zHeaderStrings -> append("Middle Name");
-    zHeaderStrings -> append("SSS Number");
-    zHeaderStrings -> append("PH Num");
-    zHeaderStrings -> append("HDMF Num");
-    zHeaderStrings -> append("Salary");
-    zHeaderStrings -> append("SSS EE\nContrib");
-    zHeaderStrings -> append("SSS ER\nContrib");
-    zHeaderStrings -> append("EC\nContrib");
-    zHeaderStrings -> append("PH EE\nContrib");
-    zHeaderStrings -> append("PH ER\nContrib");
-    zHeaderStrings -> append("HDMF EE\nContrib");
-    zHeaderStrings -> append("HDMF ER\nContrib");
-    zHeaderStrings -> append("Remarks");
-
-    EIS_Employee_Table-> setHorizontalHeaderLabels(*zHeaderStrings);   // Note that setHorizontalHeaderLabels() expects a reference to a QStringList.
-
-    // Populate the QTableWidget with the contents of DEFAULT_EMPLOYEE_FILE
-
-    FILE *eTable = fopen(DEFAULT_EMPLOYEE_FILE, "r");
-    char *line = 0x00;    // line is a pointer to NULL.
-    char *wordsptr[1024], wordsbuffer[2048];    // Words pointer and words buffer
-    int retval, row = 0;
-    size_t len = 0;
-
-    if (eTable != NULL) {
-
-        // We clear both wordsptr and wordsbuffer because the function
-        // strsplit() does not clear them.
-
-        for (int k = 0; k < 1024; ++k) {
-            wordsptr[k] = 0x00;
-        }
-
-        for (int k = 0; k < 2048; ++k) {
-            wordsbuffer[k] = 0x00;
-        }
-
-        row = 0;
-        while ((retval = getline(&line, &len, eTable)) > 0) {
-            retval = strsplit(line, wordsptr, wordsbuffer);
-
-	    for (int column = 1; column < 15; ++column) {
-	        QTableWidgetItem *newItem = new QTableWidgetItem(wordsptr[column]);
-		EIS_Employee_Table->setItem(row, column-1, newItem);
-	    }
-            ++row;
-        }
-        free(line);
-        fclose(eTable);
-    }
-    EIS_Num_Employees = row;
-}
-
-#endif
-
 
 
 void EIS_Object::set_HDMFN_Text_Field(QLineEdit *tl)
@@ -295,38 +220,6 @@ void EIS_Object::save_Firm_Info(void)
      // printf("Done!\n");
      
 }
-
-#ifdef OLDVERSION
-void EIS_Object::set_Employee_Info(void)
-// Reads the company info from the DEFAULT_INFO_FILE
-{
-     QFile inFile(DEFAULT_INFO_FILE);
-     char input_buffer[1024];
-     char *field_pointer;
-     char field_buffer[1024];
-
-     // Open the Company Information File.
-
-     if(inFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-	 inFile.readLine(input_buffer, 1024);
-	 int retval = strsplit(input_buffer, field_pointer, field_buffer);
-
-	 int lineStart = FIRM_INFORMATION_LINE;
-	
-	 QLayoutItem *tlai = theLayout -> itemAtPosition(lineStart+1,2);
-	 QLineEdit *editCtrl = (QLineEdit *) tlai -> widget();
-         editCtrl.setText(tr(field_pointer[0]));
-
-	 tlai =  theLayout->itemAtPosition(lineStart+2,2);
-	 editCtrl = (QLineEdit *) tlai->widget();
-         editCtrl.setText(tr(field_pointer[1]));
-
-	 tlai = theLayout -> itemAtPosition(lineStart+3,2);
-	 editCtrl = (QLineEdit *) tlai -> widget();
-         editCtrl.setText(tr(field_pointer[1]));
-     }
-}
-#endif
 
 void EIS_Object::create_crf(void)
 // Creates the HDMF Contributions Report Form.
