@@ -43,6 +43,7 @@ EIS_Object::EIS_Object()
     EIS_Firm_Name = 0x00;
     EIS_Firm_Address = 0x00;
     EIS_Coverage_Date = 0x00;
+    flags = 0;
     set_Firm_Info();
 
     // printf("Exiting default constructor.");
@@ -68,6 +69,7 @@ void EIS_Object::set_Firm_Info(void)
      char buffer[1024];
 
      if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
+         flags = 1;     // Toggle the flag.
          fin.readLine(buffer, 1024);
          QString QStringBuffer(buffer);      // Hope this works.
          Firm_Info_String_List = QStringBuffer.split("|"); 
@@ -139,14 +141,18 @@ void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
 void EIS_Object::set_HDMFN_Text_Field(QLineEdit *tl)
 {
     EIS_HDMF_Number = tl;
-    EIS_HDMF_Number->setText(Firm_Info_String_List[0]);
+    if (flags == 1) {
+        EIS_HDMF_Number->setText(Firm_Info_String_List[0]);
+    }
 }
 
 
 void EIS_Object::set_Firm_Name_Text_Field(QLineEdit *tl)
 {
     EIS_Firm_Name = tl;
-    EIS_Firm_Name->setText(Firm_Info_String_List[1]);
+    if (flags == 1) {
+        EIS_Firm_Name->setText(Firm_Info_String_List[1]);
+    }
 }
 
 
@@ -154,7 +160,9 @@ void EIS_Object::set_Firm_Name_Text_Field(QLineEdit *tl)
 void EIS_Object::set_Firm_Address_Text_Field(QLineEdit *tl)
 {
     EIS_Firm_Address = tl;
-    EIS_Firm_Address->setText(Firm_Info_String_List[2]);
+    if (flags == 1) {
+        EIS_Firm_Address->setText(Firm_Info_String_List[2]);
+    }
 }
 
 
@@ -218,12 +226,11 @@ void EIS_Object::save_Firm_Info(void)
      fout.open(QIODevice::WriteOnly | QIODevice::Text);
      fout.write(qPrintable(info_text));
      fout.close();
-     // printf("Done!\n");
-     
 }
 
 void EIS_Object::Create_CRF(void)
 // Creates the HDMF Contributions Report Form.
+// This function is not yet functioning.
 //
 {
     QTableWidgetItem *fItem;
