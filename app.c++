@@ -37,14 +37,14 @@ int main(int argc, char *argv[])
     QApplication mainApp(argc, argv);
     EIS_Object eisobject;
 
-    printf("Initialization of eisobject successfull.\n");
+    // printf("Initialization of eisobject successfull.\n");
 
     // Create the application and assign it a layout.
 
     QWidget *parent = new QWidget();
     QGridLayout *mainLayout = new QGridLayout(parent);
 
-    printf("Creation of mainLayout successful.\n");
+    // printf("Creation of mainLayout successful.\n");
 
     // Lay down the Document Title.
 
@@ -59,18 +59,17 @@ int main(int argc, char *argv[])
     QLabel *companyInfoLabel = new QLabel("<h2>Company Information</h2>");
     mainLayout->addWidget(companyInfoLabel, lineStart, 1,1,2);
 
-    printf("Layout of companyInfoLabel successful.\n");
+    // printf("Layout of companyInfoLabel successful.\n");
 
     QLabel *hdmfNumLabel = new QLabel("HDMF Employer Number");
     QLineEdit *hdmfNumName = new QLineEdit("01-000000-1");
     mainLayout->addWidget(hdmfNumLabel, lineStart+1,1);
     eisobject.set_HDMFN_Text_Field(hdmfNumName);
 
-    printf("Got here!!\n");
     
     mainLayout->addWidget(hdmfNumName, lineStart+1,2);
 
-    printf("Layout of hdmfNumName successful.\n");
+    // printf("Layout of hdmfNumName successful.\n");
 
     QLabel *firmLabel = new QLabel("Name of Firm");
     QLineEdit *firmName = new QLineEdit("My Way OrThe HighWay");
@@ -78,7 +77,7 @@ int main(int argc, char *argv[])
     mainLayout->addWidget(firmName,  lineStart+2, 2);
     eisobject.set_Firm_Name_Text_Field(firmName);
 
-    printf("Layout of firmName successful.\n");
+    // printf("Layout of firmName successful.\n");
 
     QLabel *addressLabel = new QLabel("Address");
     QLineEdit *addressName =  new QLineEdit("Right Beside Harvard.");
@@ -86,7 +85,7 @@ int main(int argc, char *argv[])
     mainLayout->addWidget(addressName,  lineStart+3, 2);
     eisobject.set_Firm_Address_Text_Field(addressName);
 
-    printf("Layout of addressName successful.\n");
+    // printf("Layout of addressName successful.\n");
 
     QLabel *dateLabel = new QLabel("Date of Coverage");
     QLineEdit *dateName = new QLineEdit("Month Year");
@@ -94,7 +93,7 @@ int main(int argc, char *argv[])
     mainLayout->addWidget(dateName,  lineStart+4, 2);
     eisobject.set_Firm_Address_Text_Field(addressName);
 
-    printf("Layout of dateName successful.\n");
+    // printf("Layout of dateName successful.\n");
 
     QPushButton *saveInfoButton = new QPushButton("Save Firm Info");
     mainLayout->addWidget(saveInfoButton, lineStart, 6);

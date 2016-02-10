@@ -33,6 +33,7 @@
 #include <QGridLayout>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <RString.h>
 
 // The following indicates where the Employee Table is Saved.

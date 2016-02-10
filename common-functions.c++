@@ -33,7 +33,7 @@ EIS_Object::EIS_Object()
 // the QWidgets and initializing their values.
 {
 
-    printf("Entering default constructor.");
+    // printf("Entering default constructor.");
 
     strcpy(EIS_Employee_CSV_File, DEFAULT_EMPLOYEE_FILE);
     strcpy(EIS_Firm_CSV_File, DEFAULT_INFO_FILE);
@@ -45,7 +45,7 @@ EIS_Object::EIS_Object()
     EIS_Coverage_Date = 0x00;
     set_Firm_Info();
 
-    printf("Exiting default constructor.");
+    // printf("Exiting default constructor.");
 }
 
 
@@ -74,7 +74,7 @@ void EIS_Object::set_Firm_Info(void)
      }
       
      fin.close();
-     printf("Done!\n");
+     // printf("Done!\n");
 }
 
 #ifdef OLD_SET_EMPLOYEE_TABLE
@@ -130,7 +130,7 @@ void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
         while ((retval = getline(&line, &len, eTable)) > 0) {
             retval = strsplit(line, wordsptr, wordsbuffer);
 
-	    for (int column = 1; column < 15; ++column) {
+	    for (int column = 1; column <= 16; ++column) {
 	        QTableWidgetItem *newItem = new QTableWidgetItem(wordsptr[column]);
 		EIS_Employee_Table->setItem(row, column-1, newItem);
 	    }
@@ -292,7 +292,7 @@ void EIS_Object::save_Firm_Info(void)
      fout.open(QIODevice::WriteOnly | QIODevice::Text);
      fout.write(qPrintable(info_text));
      fout.close();
-     printf("Done!\n");
+     // printf("Done!\n");
      
 }
 
@@ -341,25 +341,47 @@ void EIS_Object::Save_Table(void)
 {
     QTableWidgetItem *fItem;
     QString qstr;
+    char *out_Buffer;
     QByteArray msgStr;
     int row;
 
 
+    QFile fout(EIS_Employee_CSV_File);
+    fout.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    out_Buffer = (char *) malloc(2048*sizeof(char));
+    if (out_Buffer == NULL) return;
+
+    out_Buffer[0] = 0x00;    // Initialize the output buffer.
+                             // Believe me, this is needed because if
+                             // There is nothing on the Employee Table then we
+                             // want the output file to be empty too.
+                        
     for (row = 0; ; row++) {
+        out_Buffer[0] = 0x00;    // Make sure the string is empty.
         if ((fItem = EIS_Employee_Table->item(row,0)) == 0) {
              break;
         }
-        else for (int col = 0; col < 15; col++) {
-	    fItem = EIS_Employee_Table->item(row,col);
-            if (fItem != 0x00) {
-	        qstr = fItem->text();
-	        msgStr = qstr.toLatin1();
-	        printf("%s", msgStr.data());
+        else {
+            sprintf(out_Buffer, "%d|", row+1);
+            for (int col = 0; col < 15; col++) {
+		fItem = EIS_Employee_Table->item(row,col);
+		if (fItem != 0x00) {
+		    qstr = fItem->text();
+		    msgStr = qstr.toLatin1();
+                    strcat(out_Buffer, qPrintable(qstr));
+		    // strcat(out_Buffer, msgStr.data());
+		}
+                strcat(out_Buffer, "|");
             }
-            putchar('|');
-        }
-       printf("\n");  
+            strcat(out_Buffer, "\n");
+            // printf("The contents of out_Buffer is %s with length %ld\n", 
+            //       out_Buffer, strlen(out_Buffer));
+	    fout.write(out_Buffer, strlen(out_Buffer));
+       }
     }
+    fout.close();
+    free(out_Buffer);
 }
 
 
