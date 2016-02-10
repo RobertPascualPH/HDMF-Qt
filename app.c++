@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
     QPushButton *createButton = new QPushButton("Create Report");
     mainLayout->addWidget(createButton, lineStart+3,6);
-    QObject::connect(createButton, SIGNAL(clicked()), &eisobject, SLOT(create_crf()));
+    QObject::connect(createButton, SIGNAL(clicked()), &eisobject, SLOT(Create_CRF()));
 
     // Now done with the lay down of widgets. Show the application and
     // pass control over to the application event handler.
