@@ -37,7 +37,7 @@
 #include <RString.h>
 
 // The following indicates where the Employee Table is Saved.
-#define  DEFAULT_EMPLOYEE_FILE     "sample.csv"
+#define  DEFAULT_EMPLOYEE_FILE     "employee-info.csv"
 
 // Company information is saved and retrieved from the following file.
 #define  DEFAULT_INFO_FILE         "firm-info.csv"
@@ -55,7 +55,7 @@ class EIS_Object : public QObject
     Q_OBJECT
 
     public slots:
-        void create_crf(void);
+        void Create_CRF(void);
         void Save_Table(void);
         void save_Firm_Info(void);
 
