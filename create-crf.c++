@@ -46,7 +46,7 @@ void EIS_Object::Create_CRF(void)
      QString firmName    = EIS_Firm_Name->text(); // Does this make a copy?
      QString firmHDMFNum = EIS_HDMF_Number->text();
      QString firmAddress = EIS_Firm_Address->text();
-
+     QString dateCovered = EIS_Coverage_Date->text();
 
      outputFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
@@ -141,7 +141,80 @@ void EIS_Object::Create_CRF(void)
      outputFile.write(lineBuffer, strlen(lineBuffer));
 
 
-    // print "\\multicolumn{4}{|l|}{\\bf GRAND TOTAL} & & & \\textbf{%10.2f}\\\\" % (prsum)
+    //////////////////////////////////////////////////////////////////
+    // Now we print the employee information.                       //
+    //////////////////////////////////////////////////////////////////
+    int numRows    = EIS_Employee_Table -> rowCount();
+    // int numColumns = EIS_Employee_Table -> columnCount();
+ 
+    QTableWidgetItem *fItem;
+    QString qstr;
+    QByteArray tempStr;
+    QString lastName, firstName, middleName;
+    QString SSSIdent, HDMFIdent;
+    double EEContrib, ERContrib;
+    double EEContrib_Sum, ERContrib_Sum;
+    double salaryAmount;
+
+
+    EEContrib_Sum = ERContrib_Sum = 0;
+
+    for (int row = 0; row < numRows; row++) {
+        fItem = EIS_Employee_Table->item(row,0);   // Location of last name
+    
+        // Check if row has valid data by looking at the last name.
+        //
+        if (fItem != 0x00 && strlen(qPrintable(fItem->text())) != 0) { 
+            lastName   = fItem->text();
+            firstName  = (EIS_Employee_Table->item(row,1))->text();
+            middleName = (EIS_Employee_Table->item(row,2))->text();
+            HDMFIdent  = (EIS_Employee_Table->item(row,5))->text();
+            if (strlen(qPrintable(HDMFIdent)) == 0) {
+                SSSIdent   = (EIS_Employee_Table->item(row,3))->text();
+                HDMFIdent  = SSSIdent;
+            }
+
+            printf("Now processing the name: %s %s %s\n",
+                 qPrintable(lastName), qPrintable(firstName), qPrintable(middleName));
+
+            // Read in the Monthly Compensation.
+            //
+            qstr  = (EIS_Employee_Table->item(row,6))->text();
+            qstr = qstr.remove(",");
+            salaryAmount = strtod((qstr.toLatin1()).data(), NULL);
+
+            // Read in the EE Contribution
+            //
+            qstr  = (EIS_Employee_Table->item(row,12))->text();
+            qstr = qstr.remove(",");
+            EEContrib = strtod((qstr.toLatin1()).data(), NULL);
+            EEContrib_Sum += EEContrib;
+
+            // Read in the ER Contribution
+            //
+            qstr  = (EIS_Employee_Table->item(row,13))->text();
+            qstr = qstr.remove(",");
+            ERContrib = strtod((qstr.toLatin1()).data(), NULL);
+            ERContrib_Sum += ERContrib;
+
+            sprintf(lineBuffer,
+                "%s  & \\textbf{%s}, %s %s  & %s  & %10.2f  & %10.2f  & %10.2f & %10.2f\\\\\n",
+                qPrintable(HDMFIdent),
+                qPrintable(lastName),
+                qPrintable(firstName),
+                qPrintable(middleName),
+                qPrintable(dateCovered),
+                salaryAmount,
+                EEContrib, ERContrib, EEContrib + ERContrib);
+
+            outputFile.write(lineBuffer, strlen(lineBuffer));
+        }
+     }
+
+     sprintf(lineBuffer, 
+         "\\hline\n\\multicolumn{4}{|l|}{\\bf GRAND TOTAL} & & & \\textbf{%10.2f}\\\\\n",
+         ERContrib_Sum + EEContrib_Sum);
+     outputFile.write(lineBuffer, strlen(lineBuffer));
 
 
      // Set the epilogue of the LaTeX table
@@ -189,5 +262,7 @@ void EIS_Object::Create_CRF(void)
      outputFile.write(lineBuffer, strlen(lineBuffer));
 
      outputFile.close();
+
+
 }
 
