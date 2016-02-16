@@ -79,7 +79,9 @@ void EIS_Object::set_Firm_Info(void)
      // printf("Done!\n");
 }
 
-void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
+
+
+void EIS_Object::set_Employee_Table(QTableWidget *empTbl) 
 // This version uses the methods of the QString library.
 //
 {
@@ -173,6 +175,16 @@ void EIS_Object::set_Coverage_Date_Text_Field(QLineEdit *tl)
 }
 
 
+void EIS_Object::Read_Table_From_File(void)
+{
+    QWidget fileD;
+
+    QString fileName = QFileDialog::getOpenFileName(&fileD, 
+          tr("Open CSV file"),
+          tr("~/"), tr("CSV Files (*.csv *.txt *.dat)"));
+    printf("You selected the file %s\n", qPrintable(fileName));
+    read_File_To_Table(fileName);
+}
 
 
 /////////////////////////////////////////////////////////////
@@ -228,6 +240,7 @@ void EIS_Object::save_Firm_Info(void)
      fout.close();
 }
 
+#ifdef CRAZY
 void EIS_Object::Create_CRF(void)
 // Creates the HDMF Contributions Report Form.
 // This function is not yet functioning.
@@ -250,6 +263,7 @@ void EIS_Object::Create_CRF(void)
        printf("\n");  
     }
 }
+#endif
 
 
 void EIS_Object::Save_Table(void)

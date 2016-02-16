@@ -31,12 +31,14 @@
 #include <QFile>
 #include <QObject>
 #include <QGridLayout>
+#include <QFileDialog>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <RString.h>
 
 // The following indicates where the Employee Table is Saved.
+
 #define  DEFAULT_EMPLOYEE_FILE     "employee-info.csv"
 
 // Company information is saved and retrieved from the following file.
@@ -49,6 +51,12 @@
 // The employee table is laid out starting at the following row. 
 #define  EMPLOYEE_TABLE_LINE       8
 
+// The following is the default PDF Viewer for this system---Linux
+// at the moment. We should set things up so that the OS will choose
+// which PDF viewer is preferred by the user. That is an issue
+// which should be fixed in the future.
+
+#define  DEFAULT_PDF_VIEWER        "/usr/bin/evince"
 
 class EIS_Object : public QObject
 {
@@ -58,6 +66,8 @@ class EIS_Object : public QObject
         void Create_CRF(void);
         void Save_Table(void);
         void save_Firm_Info(void);
+        void Read_Table_From_File(void);
+        void Clear_Employee_Table(void);
 
     public:
         EIS_Object();
@@ -68,6 +78,7 @@ class EIS_Object : public QObject
         void set_Firm_Name_Text_Field(QLineEdit *tl);
         void set_Firm_Address_Text_Field(QLineEdit *tl);
         void set_Coverage_Date_Text_Field(QLineEdit *tl);
+        void read_File_To_Table(QString);
  
         QString       get_Current_File_Name(void);
         QTableWidget *get_Employee_Table(void);

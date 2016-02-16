@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     QLineEdit *dateName = new QLineEdit("Month Year");
     mainLayout->addWidget(dateLabel, lineStart+4, 1);
     mainLayout->addWidget(dateName,  lineStart+4, 2);
-    eisobject.set_Firm_Address_Text_Field(addressName);
+    eisobject.set_Coverage_Date_Text_Field(dateName);
 
     // printf("Layout of dateName successful.\n");
 
@@ -118,8 +118,15 @@ int main(int argc, char *argv[])
     QLabel *employeeLabel = new QLabel("<h2>Employee Information</h2>");
     mainLayout->addWidget(employeeLabel, lineStart, 1,1,2);
 
+    QPushButton *clearTableButton = new QPushButton("Clear Table");
+    mainLayout->addWidget(clearTableButton, lineStart,3);
+    QObject::connect(clearTableButton, SIGNAL(clicked()),
+        &eisobject, SLOT(Clear_Employee_Table(void)));
+
     QPushButton *readFileButton = new QPushButton("Read table");
     mainLayout->addWidget(readFileButton, lineStart,4);
+    QObject::connect(readFileButton, SIGNAL(clicked()),
+        &eisobject, SLOT(Read_Table_From_File(void)));
 
     QPushButton *saveAsButton = new QPushButton("Save Table as ...");
     mainLayout->addWidget(saveAsButton, lineStart,5);
