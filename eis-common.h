@@ -32,10 +32,11 @@
 #include <QObject>
 #include <QGridLayout>
 #include <QFileDialog>
+#include <QProcess>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <RString.h>
+// #include <RString.h>
 
 // The following indicates where the Employee Table is Saved.
 
