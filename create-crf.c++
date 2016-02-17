@@ -174,8 +174,11 @@ void EIS_Object::Create_CRF(void)
                 HDMFIdent  = SSSIdent;
             }
 
+
+#ifdef DEBUG
             printf("Now processing the name: %s %s %s\n",
                  qPrintable(lastName), qPrintable(firstName), qPrintable(middleName));
+#endif
 
             // Read in the Monthly Compensation.
             //
@@ -263,6 +266,31 @@ void EIS_Object::Create_CRF(void)
 
      outputFile.close();
 
+     // Now run the LaTeX compiler and view the output.
+     QProcess latex, dvips;
+     
+     latex.start("/usr/bin/latex", QStringList() << "temp.tex");
+     latex.waitForFinished();   // This will block
 
+     dvips.start("/usr/bin/dvips", 
+         QStringList() 
+         << "-t"
+         << "legal" 
+         << "-t"
+         << "landscape"
+         << "-o"
+         << "output.ps"
+         << "temp");
+     dvips.waitForFinished();   // This will block
+
+     QProcess *viewer = new QProcess(); // We do this so that when the parent exits
+                                        // the viewer remains alive.
+
+     viewer->start("/usr/bin/evince",
+         QStringList()
+         << "output.ps");   // No blocking??
+     // viewer->waitForFinished();   // This will block
+ 
+     // system("latex temp.tex && dvips -t legal -t landscape temp && evince temp.ps");
 }
 
