@@ -1,7 +1,5 @@
-HEADERS = eis-common.h
+HEADERS = eis-common.h eis-dialogs.h
 
 SOURCES = app.c++ common-functions.c++ create-crf.c++ emptabfunctions.c++
-
-LIBS = -L/usr/local/lib/ -lrstr
-
+SOURCES += eis-dialogs.c++
 
