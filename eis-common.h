@@ -30,13 +30,19 @@
 #include <QLayoutItem>
 #include <QFile>
 #include <QObject>
+#include <QVBoxLayout>
 #include <QGridLayout>
 #include <QFileDialog>
 #include <QProcess>
+#include <QDialog>
+#include <QLabel>
+#include <QPushButton>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-// #include <RString.h>
+
+#ifndef EIS_COMMON_HEADER
+#define EIS_COMMON_HEADER
 
 // The following indicates where the Employee Table is Saved.
 
@@ -80,6 +86,7 @@ class EIS_Object : public QObject
         void set_Firm_Address_Text_Field(QLineEdit *tl);
         void set_Coverage_Date_Text_Field(QLineEdit *tl);
         void read_File_To_Table(QString);
+        void dump_To_HDMF_CSV(QString);
  
         QString       get_Current_File_Name(void);
         QTableWidget *get_Employee_Table(void);
@@ -108,4 +115,5 @@ class EIS_Object : public QObject
         QStringList  Firm_Info_String_List;
 };
 
+#endif
 

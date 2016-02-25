@@ -14,6 +14,7 @@
  *
  * ***********************************************************************/
 #include "eis-common.h"
+#include "eis-dialogs.h"
 
 ////////////////////////////////////////////////////////////////////////////
 //
@@ -40,6 +41,8 @@
 
 
 void EIS_Object::Create_CRF(void)
+// Since this is a SLOT, an implicit pointer to an EIS_Object has been
+// passed to this function as "this".
 {
      char lineBuffer[16384];
      QFile outputFile("temp.tex");
@@ -292,5 +295,18 @@ void EIS_Object::Create_CRF(void)
      // viewer->waitForFinished();   // This will block
  
      // system("latex temp.tex && dvips -t legal -t landscape temp && evince temp.ps");
+
+     // Now ask if the user also wants to create a CSV version of the CRF.
+
+    csv_Dialog *csvdialog = new csv_Dialog();
+    if ((csvdialog->exec()) == QDialog::Accepted) {
+         QString savoirFiche = QFileDialog::getSaveFileName(
+                                  0,
+                                  tr("Save as CSV file"),
+                                  "~/",
+                                  tr("Text CSV Files (*.csv *.txt *.dat)"));
+         printf("You select to save CSV to the file %s.\n", qPrintable(savoirFiche));
+         this->dump_To_HDMF_CSV(savoirFiche);
+    }
 }
 

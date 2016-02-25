@@ -81,8 +81,10 @@ void EIS_Object::set_Firm_Info(void)
 
 
 
-void EIS_Object::set_Employee_Table(QTableWidget *empTbl) 
-// This version uses the methods of the QString library.
+void EIS_Object::set_Employee_Table(QTableWidget *empTbl)
+// Before calling this function, make sure that empTbl has at least
+// 15 columns. If empTbl has less than 15 columns then this function's
+// behavior is undefined.
 //
 {
     EIS_Employee_Table = empTbl;
@@ -182,7 +184,7 @@ void EIS_Object::Read_Table_From_File(void)
     QString fileName = QFileDialog::getOpenFileName(&fileD, 
           tr("Open CSV file"),
           tr("~/"), tr("CSV Files (*.csv *.txt *.dat)"));
-    printf("You selected the file %s\n", qPrintable(fileName));
+    // printf("You selected the file %s\n", qPrintable(fileName));
     read_File_To_Table(fileName);
 }
 
@@ -239,31 +241,6 @@ void EIS_Object::save_Firm_Info(void)
      fout.write(qPrintable(info_text));
      fout.close();
 }
-
-#ifdef CRAZY
-void EIS_Object::Create_CRF(void)
-// Creates the HDMF Contributions Report Form.
-// This function is not yet functioning.
-//
-{
-    QTableWidgetItem *fItem;
-    QString qstr;
-    QByteArray msgStr;
-    int row;
-
-    for (row = 0; row < EIS_Num_Employees; row++) {
-        for (int col = 0; col < 15; col++) {
-	    fItem = EIS_Employee_Table->item(row,col);
-            if (fItem != 0x00) {
-	        qstr = fItem->text();
-	        msgStr = qstr.toLatin1();
-	        printf("%s ", msgStr.data());
-            }
-        }
-       printf("\n");  
-    }
-}
-#endif
 
 
 void EIS_Object::Save_Table(void)
