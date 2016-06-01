@@ -223,6 +223,7 @@ QLineEdit * EIS_Object::get_Coverage_Date(void)
 }
 
 
+
 void EIS_Object::save_Firm_Info(void)
 {
 
@@ -243,7 +244,18 @@ void EIS_Object::save_Firm_Info(void)
 }
 
 
-void EIS_Object::Save_Table(void)
+
+/* ***********************************************************
+ * save_table_common_function()
+ *
+ * Saves a table. This is a common function which is called by
+ * two slots.
+ * 
+ * (a) Save_Table()
+ * (b) Save_Table_As()
+ * **********************************************************/
+
+void EIS_Object::save_table_common_function(QString file_name_param)
 {
     QTableWidgetItem *fItem;
     QString qstr;
@@ -252,7 +264,7 @@ void EIS_Object::Save_Table(void)
     int row;
 
 
-    QFile fout(EIS_Employee_CSV_File);
+    QFile fout(file_name_param);
     fout.open(QIODevice::WriteOnly | QIODevice::Text);
 
     out_Buffer = (char *) malloc(2048*sizeof(char));
@@ -302,6 +314,29 @@ void EIS_Object::Save_Table(void)
     fout.close();
     free(out_Buffer);
 }
+
+
+
+void EIS_Object::Save_Table(void)
+{
+    this->save_table_common_function(EIS_Employee_CSV_File);
+}
+
+
+
+
+void EIS_Object::Save_Table_As(void)
+{
+    QWidget fileD;
+
+    QString fileName = QFileDialog::getSaveFileName(&fileD, 
+          tr("Save CSV File"),
+          tr("~/"), tr("CSV Files (*.csv *.txt *.dat)"));
+    // printf("You selected the file %s\n", qPrintable(fileName));
+
+    this->save_table_common_function(fileName);
+}
+
 
 
 int EIS_Object::printTableAsTabular(void)

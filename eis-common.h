@@ -72,6 +72,7 @@ class EIS_Object : public QObject
     public slots:
         void Create_CRF(void);
         void Save_Table(void);
+        void Save_Table_As(void);
         void save_Firm_Info(void);
         void Read_Table_From_File(void);
         void Clear_Employee_Table(void);
@@ -110,6 +111,11 @@ class EIS_Object : public QObject
         QLineEdit    *EIS_Coverage_Date;
         int           flags;       // This should be bit flags. But not yet.
 
+
+        // Private functions
+        void save_table_common_function(QString);
+
+        
         // The following elements contain temporary data.
 
         QStringList  Firm_Info_String_List;

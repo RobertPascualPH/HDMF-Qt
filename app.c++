@@ -130,6 +130,9 @@ int main(int argc, char *argv[])
 
     QPushButton *saveAsButton = new QPushButton("Save Table as ...");
     mainLayout->addWidget(saveAsButton, lineStart,5);
+    QObject::connect(saveAsButton, SIGNAL(clicked()),
+        &eisobject, SLOT(Save_Table_As(void)));
+
 
     QPushButton *saveButton = new QPushButton("Save Table");
     mainLayout->addWidget(saveButton, lineStart,6);
