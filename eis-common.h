@@ -65,6 +65,13 @@
 
 #define  DEFAULT_PDF_VIEWER        "/usr/bin/evince"
 
+
+// The initial number of rows in the Employee Table Widget
+// and the default number of columns in that table.
+
+#define DEFAULT_NUM_EMPLOYEES      30
+#define DEFAULT_NUM_COLUMNS        15
+
 class EIS_Object : public QObject
 {
     Q_OBJECT
