@@ -1,0 +1,17 @@
+NOTES:
+
+20 July 2017
+------------------------------------------------------------------------
+  -- Production version completed on branch master. This branch is ready
+     enough that I think I can already use it for production. I will be
+     trying the application later tonight. If it works, I will open
+     a development branch and attempt to add more features.
+
+
+20 January 2017
+--------------------------------------------------------
+Todo:
+   -- Add an overflow options button and move the 
+      'Clear Table', 'Read Table', 'Save Table as...', and 'Save Table'
+      to that overflow options menu.
+
