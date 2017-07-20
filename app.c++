@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 
     lineStart = EMPLOYEE_TABLE_LINE;
 
-    QTableWidget *employeeTable = new QTableWidget(20,15);
+    QTableWidget *employeeTable = new QTableWidget(DEFAULT_NUM_EMPLOYEES,DEFAULT_NUM_COLUMNS);
     mainLayout->addWidget(employeeTable, lineStart+1,1,1,6);
     eisobject.set_Employee_Table(employeeTable);
 
